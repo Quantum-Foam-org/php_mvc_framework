@@ -1,6 +1,6 @@
 <?php
 
-class model {
+class controller {
 
     public $vars = array();
     private static $instance = FALSE;

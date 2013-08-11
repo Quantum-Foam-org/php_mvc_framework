@@ -1,13 +1,9 @@
 <?php
 
 
-class controller_base {
+class configure {
     protected static $type;
     protected $filters;
-    
-    public function handle() {
-        
-    }
     
     public function get_type() {
         $cl = get_called_class();
@@ -19,7 +15,7 @@ class controller_base {
         return $type;
     }
     
-    public function get_model() {
+    public function get_ctl() {
         list(, $tpl) = $this->get_type();
         return model::obj($tpl);
     }
@@ -49,14 +45,4 @@ class controller_base {
             }
         }
     }
-
-    /*
-    public function __set($name, $value) {
-        if ($name == 'data') {
-            $this->view->data = $value;
-        } else {
-            logger::obj()->write('Could not set property '.$name);
-        }
-    }
-    */
 }
