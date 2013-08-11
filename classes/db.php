@@ -23,7 +23,7 @@ class db extends PDO {
         
         return self::$dbh;
     }
-/*
+
     public function __call($name, $args) {
         $type = str_replace('fetch_cache_', '', $name);
         
@@ -61,7 +61,7 @@ class db extends PDO {
 
         return $result_set;
     }
-*/
+
     public function fetch_assoc($sql, $key_field, $value_field = null, array $params = array()) {
         $result_set = FALSE;
         
