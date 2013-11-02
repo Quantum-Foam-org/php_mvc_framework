@@ -27,20 +27,21 @@ class logger {
         	if (!self::$file_handle->flock(LOCK_EX)) {
         		usleep(1);
 				$this->write($message, $type);
-        	}
-            if (isset(self::$type[$type])) {
-                $type = self::$type[$type];
-            } else {
-                $type = self::$type[0];
-            }
-
-            $date = self::$date->setTimestamp(time())->format('Y-m-d H:i:s');
-
-            if (is_array($message)) {
-                $message = var_export($message, 1);
-            }
-
-            self::$file_handle->fwrite(vsprintf("[%s]\t\t-\t\t%s - %s \n", array($date, $type, $message)));
+        	} else {
+	            if (isset(self::$type[$type])) {
+	                $type = self::$type[$type];
+	            } else {
+	                $type = self::$type[0];
+	            }
+	
+	            $date = self::$date->setTimestamp(time())->format('Y-m-d H:i:s');
+	
+	            if (is_array($message)) {
+	                $message = var_export($message, 1);
+	            }
+	
+	            self::$file_handle->fwrite(vsprintf("[%s]\t\t-\t\t%s - %s \n", array($date, $type, $message)));
+			}
         }
     }
 
