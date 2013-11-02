@@ -2,7 +2,7 @@
 
 class array_utils {
     
-    public static function values_eq_keys($key_vals, $data_array) {
+    public static function values_eq_keys(array $key_vals, array $data_array) {
         return ($key_vals != array_keys($data_array));
     }
     

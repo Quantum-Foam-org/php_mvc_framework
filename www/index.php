@@ -15,10 +15,9 @@ class main {
 
         $ctl_class = self::get_ctl();
         $ctl = new $ctl_class();
-        $ctl->handle();
         $vars = $ctl->get_ctl()->work();
 
-        $ctl->get_view()->show($vars);
+        $ctl->get_view()->show();
     }
 
     private static function get_ctl() {

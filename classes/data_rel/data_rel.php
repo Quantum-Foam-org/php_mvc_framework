@@ -11,10 +11,7 @@ class data_rel {
     private $field_types = array();
     private static $no_id = -1;
     protected static $instance = array();
-    protected $admin = FALSE;
-    protected $admin_fields = array();
-    protected $_admin_fields = array();
-    protected $_admin_fields_default = array();
+	
 
     public static function obj($id = null, $admin = FALSE) {
         $class = get_called_class();
@@ -23,24 +20,11 @@ class data_rel {
         }
         if (!isset(self::$instance[$id]) || !(self::$instance[$id] instanceof $class)) {
             self::$instance[$id] = new $class($id);
-            self::$instance[$id]->admin = $admin;
-            if ($admin === FALSE) {
-                self::$instance[$id]->set_admin_fields();
-            }
         }
            
         return self::$instance[$id];
     }
-
-    protected function set_admin_fields() {
-        foreach (array_keys($this->fields) as $field) {
-            if (in_array($field, $this->admin_fields)) {
-                $this->_admin_field_store[$field] = $this->fields[$field];
-                $this->_admin_fields_default[$field] = $this->fields_default[$field];
-                unset($this->fields[$field], $this->fields_default[$field]);
-            }
-        }
-    }
+	
 
     public function __construct($id) {
         $db = db::obj();
@@ -158,9 +142,8 @@ EOT;
                     $sql = 'UPDATE ' . $this->table_name . ' ' . $sql . ' WHERE ' . $this->id_field . ' = ?';
                     logger::obj()->write($sql);
                     logger::obj()->write($values);
-                    $st = $db->prepare($sql);
-                    $commit = $st->execute($values);
-                    $num_rows = $st->rowCount();
+                    $st = $db->run_query($sql, $values);
+                    $commit = $num_rows = $st->rowCount();
                     logger::obj()->write($db->errorInfo());
                     logger::obj()->write($st->errorInfo());
                 } else { // insert
@@ -168,9 +151,8 @@ EOT;
                     $sql = 'INSERT INTO ' . $this->table_name . ' ' . $sql;
                     logger::obj()->write($sql);
                     logger::obj()->write($values);
-                    $st = $db->prepare($sql);
-                    $commit = $st->execute($values);
-                    $num_rows = $st->rowCount();
+                    $st = $db->run_query($sql, $values);
+                    $commit = $num_rows = $st->rowCount();
                     logger::obj()->write($db->errorInfo());
                     logger::obj()->write($st->errorInfo());
                     $this->fields[$this->id_field] = $this->id = $db->get_val('SELECT LAST_INSERT_ID() id');
@@ -196,9 +178,6 @@ EOT;
 
         logger::obj()->write('commit');
 
-        if ($this->admin === FALSE) {
-            $this->set_admin_fields();
-        }
         
         return $commit;
     }

@@ -24,6 +24,10 @@ class logger {
 
     public function write($message, $type = 0) {
         if ((boolean)config::$system['debug'] == TRUE) {
+        	if (!self::$file_handle->flock(LOCK_EX)) {
+        		usleep(1);
+				$this->write($message, $type);
+        	}
             if (isset(self::$type[$type])) {
                 $type = self::$type[$type];
             } else {

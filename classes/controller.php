@@ -1,10 +1,27 @@
 <?php
 
+class controller {
 
-class configure {
+    public $vars = array();
+    private static $instance = FALSE;
     protected static $type;
     protected $filters;
-    
+
+    public static function obj($type) {
+        $class = get_called_class();
+        if (!(self::$instance instanceOf $class)) {
+            $class = 'ctl_' . $type;
+
+            self::$instance = new $class();
+        }
+
+        return self::$instance;
+    }
+
+    public function work() {
+        return $this->vars;
+    }
+	    
     public function get_type() {
         $cl = get_called_class();
         if (!is_array($cl::$type)) {
@@ -15,10 +32,6 @@ class configure {
         return $type;
     }
     
-    public function get_ctl() {
-        list(, $tpl) = $this->get_type();
-        return model::obj($tpl);
-    }
     
     public function get_view() {
         list($type, $tpl) = $this->get_type();
