@@ -1,7 +1,9 @@
 <?php
 
-
-class query {
+/**
+ * Creates a SQL select statement and returns the result set
+ */
+class SelectQuery {
 	
 	private $field_def = array();
 	private $select_fields = array();
@@ -11,6 +13,10 @@ class query {
 	private $limit = '';
 	private $query = '';
 	
+	
+	/**
+	 * @param array $fields - The field definition
+	 */
 	public function add_fields(array $fields) {
 		foreach ($fields as $def) {
 			$this->field_def[] = $def;
@@ -23,7 +29,7 @@ class query {
 	public function add_tables(array $tables) {
 		foreach ($tables as $def) {
 			if (!isset($def[1], $def[0])) {
-				logger::obj()->write('Must set table and table alias', -1);
+				throw new Exception('Must set table and table alias', -1);
 			} else { 
 				$this->tables[$def[1]] = $def[0];
 			}
@@ -35,7 +41,7 @@ class query {
 	public function add_joins(array $joins) {
 		foreach ($joins as $def) {
 			if (isset($def[0], $def[1], $def[2])) {
-				logger::obj()->write('Must set table alias, join type and join condition', -1);
+				throw new Exception('Must set table alias, join type and join condition', -1);
 			} else {
 				$this->joins[$def[0]] = array($def[1], $def[2]);
 			}
