@@ -1,5 +1,7 @@
 <?php
 
+namespace \local;
+
 /**
  * Class which extends PHP's PDO.
  * 

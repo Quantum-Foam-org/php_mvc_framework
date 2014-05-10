@@ -1,5 +1,7 @@
 <?php
 
+namespace \local\classes\xml;
+
 class RssRead extends DomDocument {
 	private $url = null;
 	

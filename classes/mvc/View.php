@@ -1,6 +1,9 @@
 <?php
 
-class view {
+namespace \local\classses\mvc;
+
+
+class View {
     protected $tpl = null;
     protected $type = null;
     protected $has_head_foot = TRUE;

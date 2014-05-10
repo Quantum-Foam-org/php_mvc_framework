@@ -1,7 +1,8 @@
 <?php
 
+namespace \local\classes\utility;
 
-class html_create {
+class HtmlCreate {
     
     // hope to use dom document for all view/tpl items
     public static function get_dom_doc() {

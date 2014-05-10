@@ -1,6 +1,6 @@
 <?php
 
-class ex_auth extends auth {
+class exAuth extends \local\classes\Main {
 
     
     public static function login($username, $password) {

@@ -1,6 +1,8 @@
 <?php
 
-class array_utils {
+namespace \local\classes\utility;
+
+class ArrayUtil {
     
     public static function values_eq_keys(array $key_vals, array $data_array) {
         return ($key_vals != array_keys($data_array));

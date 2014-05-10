@@ -1,8 +1,12 @@
 <?php
+
+namespace \local\classes\utility;
+
+
 require_once 'Mail.php';
 require_once 'Mail/mime.php';
 
-class mail_util {
+class Mail {
 
     private $host = '';
     private $port = '';

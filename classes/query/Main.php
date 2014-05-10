@@ -1,9 +1,11 @@
 <?php
 
+namespace \local\classes\query;
+
 /**
  * Creates a SQL select statement and returns the result set
  */
-class SelectQuery {
+class Main {
 	
 	private $field_def = array();
 	private $select_fields = array();

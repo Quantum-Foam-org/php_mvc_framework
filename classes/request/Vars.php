@@ -1,6 +1,8 @@
 <?php
 
-class request_vars {
+namespace \local\classes\request;
+
+class Vars {
 
     public $get = array();
     public $post = array();

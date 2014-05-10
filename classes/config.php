@@ -1,7 +1,9 @@
 <?php
 
+namespace \local\classes;
+
 // do configuration of the application
-class config {
+class Config {
     private static $valid_types = array(
         'root_dir',
         //'class_dirs',

@@ -1,6 +1,8 @@
 <?php
 
-class request_uri {
+namespace \local\classes\request;
+
+class Uri {
     public static $rem_peices = array();
     public static $orig_uri = null;
     

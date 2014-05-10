@@ -1,9 +1,11 @@
 <?php
 
-class page_utils {
+namespace \local\classes\utility;
+
+class Page {
     
     public static function check_page_ref($page) {
-        if (page_ref::obj($page)){
+        if (PageRef::obj($page)){
             $result = TRUE;
         } else {
             $result = FALSE;
@@ -31,7 +33,7 @@ class page_utils {
     }
     
     public static function check_post($name, $text) {
-        $rq = request_vars::obj();
+        $rq = \local\classes\request\Vars::obj();
         return (isset($rq->post[$name]) && $rq->post[$name] == $text);
     }
     

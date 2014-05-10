@@ -1,6 +1,8 @@
 <?php
 
-class Curl {
+namespace \local\classes\curl;
+
+class Main {
     private $info = array(
 	array(
 	    'HTTP_CODE',

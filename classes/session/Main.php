@@ -1,6 +1,8 @@
 <?php
 
-class session {
+namespace \local\classes\session;
+
+class Main {
     protected static $instance;
 
     public static function obj() {
