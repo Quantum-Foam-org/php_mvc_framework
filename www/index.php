@@ -1,55 +1,39 @@
 <?php
 
-class main {
 
+class Main {
+
+	private static $mainProject = 'tpl';
     private static $default_ctl = '404';
     private static $routes = array(
-        'ex_admin' => array('auth' => array('rma_admin', 'rma_auth')),
-        'ex_admin/login' => array('auth' => array('rma_admin', 'rma_auth')),
+        'ex_admin' => array(),
         'open_page' => array()
     );
     public static $orig_route = null;
-
+    
     public static function run() {
-        request_uri::set();
+        \local\classes\request\Uri::set();
 
-        $ctl_class = self::get_ctl();
+        list($class, $action) = self::get_ctl();
         $ctl = new $ctl_class();
-        $vars = $ctl->get_ctl()->work();
-
-        $ctl->get_view()->show();
+        $ctl->$action();
     }
 
     private static function get_ctl() {
-        $ctl = '';
-        $options = array();
+        self::$orig_route = \local\classes\request\Uri::$orig_uri;
+		$pos = strrpos('/', self::$orig_route);
+		$class = str_replace('/', '\\', substr(self::$orig_route, 0, $pos-1));
+        $action = substr(self::$orig_route, $pos);
         
-        self::$orig_route = substr(request_uri::$orig_uri, 1);
-        $last = self::$orig_route[strlen(self::$orig_route)-1];
-        if ($last == '/') {
-            self::$orig_route = substr(self::$orig_route, 0, -1);
-        }
-        $key = self::$orig_route;
-        if (isset(self::$routes[$key])) {
-                $ctl = 'ctl_'.end(explode('/', $key));
-                $options = self::$routes[$key];
-        }
-        if (!empty($options) && isset($options['auth'])) {
-            $cls = end($options['auth']);
-            $auth = call_user_func($cls.'::obj');
-            if (!$auth::is_valid()) {
-                $ctl = 'ctl_'.$cls;
-            }
-        }
-        if (!class_exists($ctl)) {
+        if (!class_exists($class) || !method_exists($class, $action)) {
             $ctl = 'ctl_' . self::$default_ctl;
         }
 
-        unset($last, $cls, $auth, $options);
+        unset($pos);
         
-        return $ctl;
+        return array($class, $action);
     }
 
 }
 
-main::run();
+\Main::run();
