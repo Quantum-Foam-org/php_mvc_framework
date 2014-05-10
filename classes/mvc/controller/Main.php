@@ -1,8 +1,8 @@
 <?php
 
-namespace \local\classses\mvc;
+namespace \local\classses\mvc\controller;
 
-class Controller {
+class Main {
 
     public $vars = array();
     private static $instance = FALSE;
