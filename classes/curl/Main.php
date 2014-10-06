@@ -32,7 +32,9 @@ class Main {
     private $chs = array();
     private $lastChs = null;
     private $curChs = null;
-    
+    private $curlOptions = null;
+	
+	
     public function __construct($mh = FALSE) {
 	
     }
@@ -45,7 +47,18 @@ class Main {
 	}
     }
     
-	public function setOpts(CurlOpt $co) {
+	public function addOption($curlConstant, $value) {
+		$curlOpt = new Opt();
+		$curlOpt[$curlConstant] = $value;
+		
+		$this->curlOptions->attach($curlOpt);
+	}
+	
+	public function resetOptions() {
+		$this->curlOptions->removeAll();
+	}
+	
+	private function setOpts(OptionGroupStorage $co) {
 		foreach ($co as $opt) {
 			curl_setopt($this->curChs, $opt->cName, $opt->value);
 		}
