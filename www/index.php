@@ -33,7 +33,6 @@ class Main {
         
         return array($class, $action);
     }
-
 }
 
 \Main::run();
