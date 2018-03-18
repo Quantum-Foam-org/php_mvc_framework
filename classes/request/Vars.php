@@ -31,7 +31,7 @@ class Vars {
     public static function obj() {
         
         if (self::$instance === null) {
-            self::$instance = new request_vars();
+        	self::$instance = new Vars();
         }
         
         return self::$instance;
