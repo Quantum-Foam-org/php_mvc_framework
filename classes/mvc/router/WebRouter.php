@@ -34,26 +34,35 @@ class WebRouter {
 
     private function get_ctl() : array {
         $this->orig_route = \local\classes\request\Uri::$orig_uri;
-	$pos = \strrpos('/', $this->orig_route);
-	$class = \str_replace('/', '\\', \substr($this->orig_route, 0, $pos-1));
-        $action = \substr($this->orig_route, $pos);
         
         $options = ($this->routes[$this->orig_route] ?: null);
         
-        if (!empty($options) && isset($options['auth'])) {
-            $auth_cls = $options['auth'];
-            $auth = \call_user_func($auth_cls.'::obj');
-            if (!$auth::is_valid()) {
-                $ctl = 'ctl_'.$cls;
+        if (isset($options['auth_route'], $$this->routes['auth_route']) 
+                && !\call_user_func($options['auth'].'::is_valid')) {
+            header("Location: ".$options['auth_route']);
+            exit();
+        }
+        
+        if (isset($options['ctl'], $options['auth'], $options['act'])) {
+            if (!\call_user_func($options['auth'].'::is_valid')) {
+                $ctl = $options['ctl'];
+                $act = $options['act'];
+            } else {
+                header();
+                exit();
             }
+        } else if (isset($options['ctl'], $options['act'])) {
+            $ctl = $options['ctl'];
+            $act = $options['act'];
+        } else {
+            $ctl = $this->default_ctl;
+            $act = $this->default_act;
         }
         
-        if (!\class_exists($class) || !\method_exists($class, $action)) {
-            $ctl = 'ctl_' . $this->default_ctl;
+        if (!\method_exists($ctl, $act)) {
+            
         }
         
-        unset($pos);
-        
-        return array($class, $action);
+        return array($ctl, $act);
     }
 }
