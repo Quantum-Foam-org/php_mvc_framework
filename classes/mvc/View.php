@@ -1,16 +1,15 @@
 <?php
 
-namespace \local\classses\mvc;
-
+namespace mvc;
 
 class View {
-    protected $tpl = null;
-    protected $type = null;
+    protected $tplName = null;
+    protected $projectName = null;
+    protected $path = null;
     protected $has_head_foot = TRUE;
-    protected $file_type = '.phtml';
     private static $instance = FALSE;
     
-    public static function obj($type, $tpl) {
+    public static function obj(string $projectName, string $tpl, string $path = null) : View {
         if (!(self::$instance instanceOf view)) {
             self::$instance = new view($type, $tpl);
         }
@@ -18,9 +17,10 @@ class View {
         return self::$instance;
     }
     
-    public function __construct($type, $tpl) {
-        $this->tpl = $tpl;
-        $this->type = $type;
+    public function __construct(string $projectName, string $tpl, string $path = null) {
+        $this->projectName = $projectName;
+        $this->tplName = $tpl;
+        $this->path = $type;
         
         if (isset(request_vars::obj()->get['t']) and request_vars::obj()->get['t'] == 'json') {
             $this->has_head_foot = FALSE;
@@ -48,13 +48,13 @@ class View {
             }
             
             echo $__v_header;
-            require(config::$view_dir.'/'.$this->type.'/'.$this->tpl.$this->file_type);
+            require(config::$view_dir.'/'.$this->path.'/'.$this->tplName);
             echo $__v_footer;
         }
     }
     
-    private function check_view() {
-        $view = config::$view_dir.'/'.$this->type.'/'.$this->tpl.$this->file_type;
+    private function checkView() : boolean {
+        $view = config::$view_dir.'/'.$this->path.'/'.$this->tplName;
         
         if (!is_readable($view)) {
             logger::obj()->write('Unable to open view phtml: '.$view, -1);

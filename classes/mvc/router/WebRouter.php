@@ -5,7 +5,7 @@ namespace mvc\router;
 class WebRouter {
 
     private $mainProject = 'tpl';
-    private $defaultCtl = '404';
+    private $defaultCtl = array('ctl' => 'ActionGroup', 'act' => 'header404');
     private $routes = array();
     private $origRoute = null;
     
@@ -37,7 +37,7 @@ class WebRouter {
         
         $options = ($this->routes[$this->orig_route] ?: null);
         
-        if (isset($options['auth_route'], $$this->routes['auth_route']) 
+        if (isset($options['auth_route'], $this->routes['auth_route']) 
                 && !\call_user_func($options['auth'].'::is_valid')) {
             header("Location: ".$options['auth_route']);
             exit();
