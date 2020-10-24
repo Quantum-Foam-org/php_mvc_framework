@@ -9,8 +9,7 @@ use common\errors\ExceptionHandler;
 use common\logging\Logger;
 use web\Config;
 
-$exh = new ExceptionHandler();
-$exh->setHandler();
+ExceptionHandler::setHandler();
 
 Config::obj(__DIR__ . '/config/config.ini');
 
