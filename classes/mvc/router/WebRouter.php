@@ -2,15 +2,19 @@
 
 namespace mvc\router;
 
+use \local\classes\request\Uri;
+
 class WebRouter {
 
     private $mainProject = 'tpl';
-    private $defaultCtl = array('ctl' => 'ActionGroup', 'act' => 'header404');
+    private $defaultCtl = [
+        404 => ['ctl' => 'ActionGroup', 'act' => 'page404'],
+        500 => ['ctl' => 'ActionGroup', 'act' => 'page500']
+        ];
     private $routes = array();
-    private $origRoute = null;
     
     public function __set($name, $value) {
-        if (in_array($name, array('mainProject', 'defaultCtl', 'routes'))) {
+        if (in_array($name, array('mainProject', 'routes'))) {
             $this->$name = $value;
         }
     }
@@ -25,44 +29,56 @@ class WebRouter {
     }
     
     public function run() : void {
-        \local\classes\request\Uri::set();
+        Uri::set();
 
-        list($class, $action) = $this->get_ctl();
-        $ctl = new $ctl_class();
+        try {
+            list($class, $action) = $this->get_ctl();
+        } catch(\UnexpectedValueException $uve) {
+            $this->header404();
+        }
+        $ctl = new $class();
         $ctl->$action();
+        exit();
     }
 
     private function get_ctl() : array {
-        $this->orig_route = \local\classes\request\Uri::$orig_uri;
+        $options = ($path = Uri::getCurrentUri()->url['path'] ? $this->routes[$path] : null);
         
-        $options = ($this->routes[$this->orig_route] ?: null);
-        
-        if (isset($options['auth_route'], $this->routes['auth_route']) 
-                && !\call_user_func($options['auth'].'::is_valid')) {
-            header("Location: ".$options['auth_route']);
-            exit();
+        if (isset($options['auth_route'], $options['auth'], $this->routes['auth_route'])) {
+            if (\class_exists($options['auth'])
+                && !\call_user_func($options['auth'].'::is_valid')
+            ) {
+                $route = sprintf("Location: %s", $this->routes['auth_route']);
+                header($route);
+                exit();
+            } else {
+                $log = 'Authentication route not configured';
+                Logger::obj()->write($log, -1);
+            
+                throw new \BadMethodCallException($log);
+            }
         }
         
-        if (isset($options['ctl'], $options['auth'], $options['act'])) {
-            if (!\call_user_func($options['auth'].'::is_valid')) {
-                $ctl = $options['ctl'];
-                $act = $options['act'];
-            } else {
-                header();
-                exit();
-            }
-        } else if (isset($options['ctl'], $options['act'])) {
+        if (isset($options['ctl'], $options['act'])) {
             $ctl = $options['ctl'];
             $act = $options['act'];
         } else {
-            $ctl = $this->default_ctl;
-            $act = $this->default_act;
+            $this->header404();
         }
         
-        if (!\method_exists($ctl, $act)) {
+        if (!\class_exists($ctl) || !\method_exists($ctl, $act)) {
+            $log = 'Unable to find controller action';
+            Logger::obj()->write($log, -1);
             
+            throw new \UnexpectedValueException($log);
         }
         
         return array($ctl, $act);
+    }
+    
+    public function header404() {
+       // $route = sprintf('Location: %s', $this->defaultCtl[404])
+        header($route);
+        exit();
     }
 }

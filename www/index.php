@@ -9,8 +9,6 @@ use common\errors\ExceptionHandler;
 use common\logging\Logger;
 use web\Config;
 
-ExceptionHandler::setHandler();
-
 Config::obj(__DIR__ . '/config/config.ini');
 
 $wr = new router\WebRouter();
@@ -23,7 +21,9 @@ if (!empty(Config::obj()->routes)) {
         $wr->routes = require($routeFile);
     }
 } else {
-    throw new RuntimeException('No routes have been configured', 55);
+    Logger::obj()->write('No routes have been configured', -1, true);
+    
+    exit(-1);
 }
 
 $wr->run();
